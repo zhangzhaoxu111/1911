@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.st.dao.AnnontionDao">
+	<select id="getCount" parameterType="map" resultType="int">
+		select
+		count(*)from annontion where annontion_visit_id like '%${checktext}%'
+	</select>
+	<!-- 显示所有部门 -->
+	<select id="getAllAnnon" resultType="map">
+		select * from annontion
+	</select>
+<!-- 	新增批注 -->
+	<insert id="add_annon" parameterType="map">
+	insert into annontion 
+	(annontion_id,annontion_visit_id,annontion_user_id,annontion_time,annontion_info)
+	values 
+	(#{annontion_id},#{annontion_visit_id},#{annontion_user_id},now(),#{annontion_info})
+	</insert>
+<!-- 	删除批注 -->
+<delete id="del_annon" parameterType="map">
+delete from annontion where annontion_id = #{annontion_id}
+</delete>
+<!-- 修改批注 -->
+<update id="upd_annon" parameterType="map">
+update annontion set annontion_info = #{annontion_info} where annontion_id = #{annontion_id}
+</update>
+</mapper>

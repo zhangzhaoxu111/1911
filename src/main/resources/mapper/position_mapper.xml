@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.st.dao.PositionDao">
+	<select id="getallrole" resultType="com.st.bean.PositionBean">
+	select role_id value,role_name title from role
+	</select>
+	
+	<select id="getalluser" resultType="com.st.bean.PositionBean">
+	select user_id value,username title from user
+	</select>
+</mapper>

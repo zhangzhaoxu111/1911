@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.st.dao.CustomerDao">
+	<!-- 显示全部信息 -->
+	<select id="getAllCus" resultType="map">
+		select * from `customer` where
+		customer_id like '%${checktext}%' or
+		customer_name like '%${checktext}%'
+		ORDER BY customer_id DESC limit
+		${start},${limit}
+	</select>
+	<!-- 查询客户信息 -->
+	<select id="getAllCustom" resultType="map">
+		select * from `customer` where
+		customer_id like '%${checktext}%' or
+		customer_name like
+		'%${checktext}%'
+		ORDER BY customer_id DESC limit
+		${start},${limit}
+	</select>
+
+	<!-- 显示公海用户信息 -->
+	<select id="getAllPub" resultType="map">
+		select * from `customer` where
+		customer_public =1
+		ORDER BY customer_id DESC limit
+		${start},${limit}
+	</select>
+	<!-- 查询公海信息 -->
+	<select id="getAllPubli" resultType="map">
+		select * from `customer` where
+		customer_id like '%${checktext}%' or
+		customer_name like '%${checktext}%' and
+		customer_public =1
+		ORDER BY customer_id DESC limit
+		${start},${limit}
+	</select>
+	<!-- 显示个人用户信息 -->
+	<select id="getAllPri" resultType="map">
+		select * from `customer` where
+		customer_public = 0 and
+		customer_user = #{customer_user}
+		ORDER BY
+		customer_id DESC limit
+		${start},${limit}
+	</select>
+	<!-- 查询私人用户信息 -->
+	<select id="getAllPr" resultType="map">
+		select * from `customer` where
+		customer_id like '%${checktext}%' and
+		customer_name like '%${checktext}%' and
+		customer_public = 0 and 
+		customer_user = #{customer_user}
+		ORDER BY customer_id DESC limit
+		${start},${limit}
+	</select>
+	<select id="getCount" parameterType="map" resultType="int">
+		select
+		count(*)from customer where customer_name like '%${checktext}%'
+	</select>
+
+	<delete id="delCustomer" parameterType="map">
+		delete from customer
+		where
+		customer_id = #{customer_id}
+	</delete>
+
+	<insert id="addCustomer" parameterType="map">
+		insert into customer
+		(customer_id,customer_name,customer_man,customer_tel,customer_email,customer_addr,customer_public,customer_time)
+		values
+		(#{customer_id},#{customer_name},#{customer_man},#{customer_tel},#{customer_email},#{customer_addr},#{customer_public},now())
+	</insert>
+	<update id="updCustomer" parameterType="map">
+		update customer set
+		customer_name=#{customer_name},customer_man=#{customer_man},customer_tel=#{customer_tel},customer_email=#{customer_email},customer_public=#{customer_public},customer_time=now(),customer_addr=#{customer_addr}
+		where customer_id=#{customer_id}
+	</update>
+	<!-- 修改星级 -->
+	<update id="updgrade" parameterType="map">
+		update customer set customer_grade =#{customer_grade} where
+		customer_id=#{customer_id}
+	</update>
+	<!-- 修改公海客户 -->
+	<update id="cus_public" parameterType="map">
+		update customer set customer_public =0,customer_user = #{customer_user}
+		where customer_id=#{customer_id}
+	</update>
+	<!-- 修改个人客户 -->
+	<update id="cus_private" parameterType="map">
+		update customer set customer_public =1 where customer_id=#{customer_id}
+	</update>
+<!-- 	大于两天 -->
+	<select id="no_visit_list" resultType="map" parameterType="map">
+		select *from customer a left join visit b on 
+		 a.customer_id = b.visit_customer_id
+		  where curdate()>=DATA_ADD(b.visit_time,INTERVAL 2 DAY)
+	</select>
+	
+	<insert id="init_tip" parameterType="map">
+	insert into tip(tip_id,tip_time,tip_info,tip_user_id,tip_state)
+	 values 
+	 <foreach collection="tip_infos" item="tip_info" separator=",">
+	 (#{tip_info.uuid},now(),#{tip_info.tip_info})
+	</foreach>
+	</insert>
+	
+	<select id="visit_infos" parameterType="String" resultType="map">
+	select *from visit where customer_visit_id = #{customer_visit_id} limit ${start},${limit}
+	</select>
+</mapper>

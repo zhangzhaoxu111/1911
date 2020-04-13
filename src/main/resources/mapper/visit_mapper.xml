@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.st.dao.VisitDao">
+	<!-- 查询分页 -->
+	<select id="getCount" parameterType="map" resultType="int">
+		select
+		count(*)from visit where visit_customer_id like '%${checktext}%'
+	</select>
+	<!-- 查询显示所有 -->
+	<select id="getAllVisit" resultType="map">
+		select * from `visit` where
+		visit_id like '%${checktext}%' or
+		visit_customer_id like
+		'%${checktext}%'
+		ORDER BY visit_id DESC limit
+		${start},${limit}
+	</select>
+<!-- 	删除 -->
+<delete id="delvisit" parameterType="map">
+delete from visit where visit_id = #{visit_id}
+</delete>
+	<!-- 查询visit_pattern -->
+	<select id="findAllPattern" resultType="map">
+		select distinct visit_pattern from visit
+	</select>
+	
+	<!-- 查询visit_pay -->
+	<select id="findAllPay" resultType="map">
+		select distinct visit_pay from visit
+	</select>
+	
+<!-- 	新增回访记录 -->
+	<insert id="addvisit" parameterType="map">
+		insert into visit
+		(visit_id,visit_customer_id,visit_user_id,visit_time,visit_info,visit_pattern,visit_pay,visit_money)
+		values
+		(#{visit_id},#{visit_customer_id},#{visit_user_id},now(),#{visit_info},#{visit_pattern},#{visit_pay},#{visit_money})
+	</insert>
+</mapper>

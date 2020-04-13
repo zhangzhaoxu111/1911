@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.st.dao.BumenDao">
+	<select id="getCount" parameterType="map" resultType="int">
+		select
+		count(*)from bumen where bmname like '%${checktext}%'
+	</select>
+<!-- 显示所有部门 -->
+	<select id="getAllBumen" resultType="map">
+		SELECT
+		a.bmid,a.bmname,a.managerr,GROUP_CONCAT(c.username) as hgzs from `bumen` as a
+		LEFT JOIN bumen_user as b on a.bmid = b.bmid
+		LEFT JOIN `user` as c on b.user_id = c.user_id GROUP BY a.bmname DESC
+		limit
+		${start},${limit}
+	</select>
+<!-- 查询所有部门 -->
+	<select id="getAllBum" resultType="map">
+		select * from `bumen` where
+		bmid like '%${checktext}%' or
+		bmname like
+		'%${checktext}%'
+		ORDER BY bmid DESC limit
+		${start},${limit}
+	</select>
+	<delete id="delbumen" parameterType="map">
+		delete from bumen where
+		bmid
+		= #{bmid}
+	</delete>
+
+	<insert id="addbumen" parameterType="map">
+		insert into bumen
+		(bmid,bmname,managerr) values (#{bmid},#{bmname},#{managerr})
+	</insert>
+
+	<update id="updbumen" parameterType="map">
+		update bumen set
+		bmname=#{bmname}
+		where bmid=#{bmid}
+	</update>
+
+	<insert id="add_bumen_role" parameterType="map">
+		insert into bumen_user (bmid,user_id)
+		values
+		<foreach collection="user_id" item="item" index="index"
+			separator=",">
+			(#{bmid},#{item})
+		</foreach>
+	</insert>
+
+	<delete id="delBumen_role" parameterType="map">
+		delete from bumen_user
+		where
+		bmid = #{bmid}
+	</delete>
+
+	<select id="findAll" resultType="map">
+		select *from user
+	</select>
+</mapper>
